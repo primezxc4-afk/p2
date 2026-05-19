@@ -5,7 +5,7 @@ export const initialServers: ServerTypes[] = [
     name: "Main",
     server: "main",
     status: "queue",
-    desc: "Fixes Media Mismatch",
+    desc: "Main Server",
   },
   {
     name: "Icarus I",
