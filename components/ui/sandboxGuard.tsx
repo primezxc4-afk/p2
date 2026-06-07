@@ -1,14 +1,28 @@
 // components/SandboxGuard.jsx
 "use client";
 
-import { useSandboxDetection } from "@/hooks/sandboxDetection";
+import { useEffect, useState } from "react";
 
 export default function SandboxGuard({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const isSandboxed = useSandboxDetection();
+  const [isSandboxed, setIsSandboxed] = useState(false);
+
+  useEffect(() => {
+    const inIframe = window.self !== window.top;
+    if (!inIframe) return;
+
+    try {
+      localStorage.setItem("__sb__", "1");
+      localStorage.removeItem("__sb__");
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "SecurityError") {
+        setIsSandboxed(true);
+      }
+    }
+  }, []);
 
   if (isSandboxed) {
     return (

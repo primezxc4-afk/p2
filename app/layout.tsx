@@ -78,9 +78,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Provider>
-            {/* <SandboxGuard> */}
+            <SandboxGuard>
             {children}
-            {/* </SandboxGuard> */}
+            </SandboxGuard>
           </Provider>
         </ThemeProvider>
       </body>
