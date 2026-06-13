@@ -247,6 +247,7 @@ export async function GET(req: NextRequest) {
           media_type: mediaType,
           subject_id: subjectId,
           detail_path: detailPath,
+          year,
         },
         {
           onConflict: "tmdb_id,media_type",
