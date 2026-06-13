@@ -333,25 +333,12 @@ export async function GET(req: NextRequest) {
     ];
 
     const shuffledProxies = [...proxies].sort(() => Math.random() - 0.5);
-    let workingProxy = await getWorkingProxy(
+    const workingProxy = await getWorkingProxy(
       sortedDownloads[0].url,
       shuffledProxies,
     );
-
-    // Retry with a fresh shuffle if first attempt failed
     if (!workingProxy) {
-      const reshuffled = [...proxies].sort(() => Math.random() - 0.5);
-      workingProxy = await getWorkingProxy(sortedDownloads[0].url, reshuffled);
-    }
-
-    // One more retry
-    if (!workingProxy) {
-      const reshuffled2 = [...proxies].sort(() => Math.random() - 0.5);
-      workingProxy = await getWorkingProxy(sortedDownloads[0].url, reshuffled2);
-    }
-
-    if (!workingProxy) {
-      logRequest(502, "no working proxy after 3 attempts");
+      logRequest(502, "no working proxy");
       return NextResponse.json(
         { success: false, error: "No working proxy available" },
         { status: 502 },
