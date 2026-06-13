@@ -375,6 +375,7 @@ export async function GET(req: NextRequest) {
         .map((d: any) => ({
           lang: d.lanCode,
           name: d.lanName,
+          subjectId: d.subjectId,
         })),
       meow: !!cached,
     });
