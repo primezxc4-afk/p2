@@ -362,7 +362,7 @@ export async function GET(req: NextRequest) {
     const ts = Number(req.nextUrl.searchParams.get(FIELD_MAP.ts));
     const token = req.nextUrl.searchParams.get(FIELD_MAP.token)!;
     const f_token = req.nextUrl.searchParams.get(FIELD_MAP.fToken)!;
-
+    console.log(title);
     if (!tmdbId || !mediaType || !title || !year || !ts || !token) {
       logRequest(404, "missing params");
       return NextResponse.json(
@@ -450,7 +450,8 @@ export async function GET(req: NextRequest) {
     else {
       const baseSlug = title!
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/['''`]/g, "") // strip apostrophes first
+        .replace(/[^a-z0-9]+/g, "-") // then replace remaining non-alphanumeric
         .replace(/^-|-$/g, "");
 
       const hollySlug =
