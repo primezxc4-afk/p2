@@ -89,6 +89,7 @@ export function usePlayerServers({
   }
 
   function handleMarkDub() {
+    
     setServers((prev) =>
       prev.map((s, i) =>
         i === serverIndex && s.status === "available"

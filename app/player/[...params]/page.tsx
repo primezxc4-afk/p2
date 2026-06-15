@@ -170,7 +170,7 @@ export default function Player() {
     title,
     year,
     enable: !allFailed,
-    dub: dubLang ? dubLang : dub,
+    dub: dubLang ?? dub,
   });
 
   // ─── Subtitles ───────────────────────────────────────────────────────────────
@@ -309,6 +309,7 @@ export default function Player() {
   useEffect(() => {
     if (!dub) return;
     handleMarkDub();
+    refetch();
   }, [dub]);
 
   useEffect(() => {
