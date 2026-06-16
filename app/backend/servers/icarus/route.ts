@@ -836,24 +836,6 @@ export async function GET(req: NextRequest) {
         display: c.lanName,
         file: c.url,
       }));
-
-      // Save to downloads cache
-      await supabase.from("moviebox_downloads_cache").upsert(
-        {
-          tmdb_id: tmdbId,
-          media_type: mediaType,
-          season: season ?? null,
-          episode: episode ?? null,
-          dub: activeDubLang,
-          type: activeDubType,
-          downloads: sortedDownloads,
-          subtitles,
-        },
-        {
-          onConflict: "tmdb_id,media_type,season,episode,dub,type",
-          ignoreDuplicates: true,
-        },
-      );
     }
 
     const proxies = [
@@ -901,6 +883,25 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(
         { success: false, error: "No working proxy available" },
         { status: 502 },
+      );
+    }
+
+    if (!cachedDownloads) {
+      await supabase.from("moviebox_downloads_cache").upsert(
+        {
+          tmdb_id: tmdbId,
+          media_type: mediaType,
+          season: season ?? null,
+          episode: episode ?? null,
+          dub: activeDubLang,
+          type: activeDubType,
+          downloads: sortedDownloads,
+          subtitles,
+        },
+        {
+          onConflict: "tmdb_id,media_type,season,episode,dub,type",
+          ignoreDuplicates: true,
+        },
       );
     }
 
