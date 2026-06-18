@@ -822,13 +822,14 @@ export async function GET(req: NextRequest) {
       .eq("tmdb_id", tmdbId)
       .eq("media_type", mediaType)
       .eq("dub", activeDubLang)
-      .eq("type", activeDubType);
+      .eq("type", activeDubType)
+      .gt("expires_at", new Date().toISOString());
 
     if (season) dlQuery.eq("season", season);
-    else dlQuery.is("season", null);
+    else dlQuery.eq("season", "");
 
     if (episode) dlQuery.eq("episode", episode);
-    else dlQuery.is("episode", null);
+    else dlQuery.eq("episode", "");
 
     const { data: cachedDownloads } = await dlQuery.maybeSingle();
     if (cachedDownloads) {
@@ -939,16 +940,17 @@ export async function GET(req: NextRequest) {
         {
           tmdb_id: tmdbId,
           media_type: mediaType,
-          season: season ?? null,
-          episode: episode ?? null,
+          season: season ?? "",
+          episode: episode ?? "",
           dub: activeDubLang,
           type: activeDubType,
           downloads: sortedDownloads,
           subtitles,
+          expires_at: new Date(Date.now() + 1000 * 60 * 60 * 45).toISOString(),
         },
         {
           onConflict: "tmdb_id,media_type,season,episode,dub,type",
-          ignoreDuplicates: true,
+          // ignoreDuplicates: true,
         },
       );
     }
