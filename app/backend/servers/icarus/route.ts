@@ -833,6 +833,7 @@ export async function GET(req: NextRequest) {
 
     const { data: cachedDownloads } = await dlQuery.maybeSingle();
     if (cachedDownloads) {
+      console.log(`[ICARUS] downloads cache hit`);
       sortedDownloads = cachedDownloads.downloads ?? [];
       subtitles = cachedDownloads.subtitles ?? [];
     } else {
@@ -843,7 +844,7 @@ export async function GET(req: NextRequest) {
       }
 
       const sourcesRes = await fetchWithTimeout(
-        `https://h5-api.aoneroom.com/wefeed-h5api-bff/subject/download?${params.toString()}`,
+        `${baseUrl}/wefeed-h5-bff/web/subject/download?${params.toString()}`,
         {
           headers: {
             ...headers,
@@ -858,8 +859,6 @@ export async function GET(req: NextRequest) {
       const sources =
         sourcesJson?.data?.data || sourcesJson?.data || sourcesJson;
       const downloads = sources?.downloads || [];
-
-   
 
       if (!downloads.length) {
         logRequest(404, "no download sources");
