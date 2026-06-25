@@ -170,7 +170,7 @@
 //       { status: 500 },
 //     );
 //   }
-// }
+// }https://daedalus.test33-4ce.workers.dev/https://daedalus.test32-dc9.workers.dev/https://daedalus.test31-5f3.workers.dev/
 // //https://daedalus.test30-997.workers.dev/
 import { fetchWithTimeout } from "@/lib/fetch-timeout";
 import { NextRequest, NextResponse } from "next/server";
@@ -186,7 +186,14 @@ const supabase = createClient(
 
 const SCREENIFY = "https://www.screenify.fun";
 
-const DAEDALUS_WORKERS = ["test30-997", "amenohabakiri174", "zxcprime371"];
+const DAEDALUS_WORKERS = [
+  "test31-5f3",
+  "test32-dc9",
+  "test33-4ce",
+  "test30-997",
+  "amenohabakiri174",
+  "zxcprime371",
+];
 
 async function resolveWorker(upstreamPath: string): Promise<string | null> {
   const shuffled = [...DAEDALUS_WORKERS].sort(() => Math.random() - 0.5);
