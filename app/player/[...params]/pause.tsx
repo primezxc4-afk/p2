@@ -20,10 +20,10 @@ export default function Pause({
         "fixed inset-0 z-10",
         "bg-black/60",
         "overflow-hidden pointer-events-none",
-        "flex items-end justify-end gap-10 flex-col lg:p-30 md:p-20 p-4",
+        "flex items-end justify-end  flex-col lg:p-20 md:p-10 p-4",
       )}
     >
-      <div className="w-full flex flex-col gap-12">
+      <div className="w-full flex flex-col gap-12 landscape:gap-3">
         <div className=" max-w-3xl ">
           <div className={cn()}>
             <h3
@@ -36,7 +36,7 @@ export default function Pause({
             </h3>
             <h1
               className={cn(
-                "text-2xl md:text-3xl lg:text-5xl landscape:text-lg",
+                "text-2xl md:text-3xl lg:text-5xl landscape:text-base",
                 "font-bold text-white",
                 "mt-1 landscape:mt-0",
               )}
@@ -74,7 +74,7 @@ export default function Pause({
           </div>
         </div>
 
-        <div className={cn(" text-sm md:text-base")}>
+        <div className={cn(" text-sm md:text-base landscape:text-xs")}>
           <h1 className="lg:text-lg">Paused</h1>
         </div>
       </div>
