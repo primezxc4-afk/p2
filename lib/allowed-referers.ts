@@ -1,5 +1,5 @@
 const ALLOWED_REFERERS = [
-  // "http://localhost:3000/",
+  "http://localhost:3000/",
   "https://zxcprime.site/",
   "https://www.zxcprime.site/",
   "https://zxcstream.xyz/",
@@ -16,7 +16,7 @@ const ALLOWED_REFERERS = [
 ];
 
 export const ALLOWED_ORIGINS = [
-  //  "http://localhost:3000",
+  "http://localhost:3000",
   "https://zxcprime.site",
   "https://www.zxcprime.site",
   "https://zxcstream.xyz",
