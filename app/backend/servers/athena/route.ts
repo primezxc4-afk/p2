@@ -189,9 +189,13 @@ const SCREENIFY = "https://www.screenify.fun";
 //https://daedalus.test35-f46.workers.dev/ https://daedalus.test34-2ea.workers.dev/ https://daedalus.test36-59e.workers.dev/
 //https://daedalus.test37-93b.workers.dev/ /https://daedalus.test39-43c.workers.dev/ https://daedalus.test40-fdf.workers.dev/
 //https://daedalus.test38-eab.workers.dev/ https://daedalus.test41-2c1.workers.dev/
-const DAEDALUS_WORKERS = [
-  "test42-947",
+//https://daedalus.test45-b77.workers.dev/ https://daedalus.test44-255.workers.dev/  https://daedalus.test43-cbe.workers.dev/
 
+const DAEDALUS_WORKERS = [
+  "test45-b77",
+  "test44-255",
+  "test42-947",
+  "test43-cbe",
   //NO TOKEN
   "test41-2c1",
   "test40-fdf",
