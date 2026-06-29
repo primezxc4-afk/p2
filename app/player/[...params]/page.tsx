@@ -4,7 +4,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDoubleTap } from "use-double-tap";
-import { ArrowLeft, TriangleAlert, X } from "lucide-react";
+import { ArrowLeft, ExternalLink, TriangleAlert, X } from "lucide-react";
 import { Tailspin } from "ldrs/react";
 import "ldrs/react/Tailspin.css";
 import { cn } from "@/lib/utils";
@@ -530,7 +530,7 @@ export default function Player() {
       </div>
     );
   }
-  if (isSandboxed) {
+  if (!isSandboxed) {
     return (
       <div
         className={cn(
@@ -561,18 +561,39 @@ export default function Player() {
               restrictions.
             </p>
           </div>
+
+          {/* <div className="flex items-center gap-6 mt-6">
+            <div className="h-px bg-border flex-1"></div>{" "}
+            <h3 className="text-xs uppercase text-muted-foreground">
+              Contact Us
+            </h3>
+            <div className="h-px bg-border flex-1"></div>
+          </div>
           <div className="flex justify-center items-center gap-3">
             <Button
               variant="outline"
               className="mt-6"
               onClick={() => setIsSandboxed(false)}
             >
-              Try Again
+              <ExternalLink /> Facebook
             </Button>
-            {/* <Button className="mt-6" onClick={handleResetServers}>
-              Contact Us
-            </Button> */}
-          </div>
+
+            <Button
+              variant="outline"
+              className="mt-6"
+              onClick={() => setIsSandboxed(false)}
+            >
+              <ExternalLink /> Telegram
+            </Button>
+            <Button
+              variant="outline"
+              className="mt-6"
+              onClick={() => setIsSandboxed(false)}
+            >
+              <ExternalLink /> Discord
+            </Button>
+           
+          </div> */}
         </div>
       </div>
     );
