@@ -11,20 +11,18 @@ export function useTvSeason({
   season_number?: number;
   media_type: string;
 }) {
-  const seasonQuery = useQuery<SeasonTypes>({
+  return useQuery<SeasonTypes>({
     queryKey: ["tv-season", tmdbId, season_number],
-    enabled: !!season_number && media_type === "tv",
+    enabled: media_type === "tv" && season_number !== undefined,
     queryFn: async () => {
-      const apiKey = process.env.NEXT_PUBLIC_TMDB_KEY;
-      const url = `https://api.themoviedb.org/3/tv/${tmdbId}/season/${season_number}?api_key=${apiKey}`;
-      const res = await axios.get(url);
-      return res.data;
+      const { data } = await axios.get(
+        `/backend/tmdb/season/${tmdbId}/season/${season_number}`,
+      );
+      return data;
     },
     retry: false,
     staleTime: Infinity,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    refetchIntervalInBackground: false,
   });
-  return seasonQuery;
 }
