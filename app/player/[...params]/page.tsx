@@ -607,27 +607,27 @@ export default function Player() {
         isVisible ? "" : "cursor-none",
       )}
       onClick={() => {
-        // if (!checkedSandbox && window.self !== window.top) {
-        //   const popup = window.open(
-        //     "",
-        //     "_blank",
-        //     "popup=yes,width=1,height=1,right=-10000,bottom=-10000",
-        //   );
+        if (!checkedSandbox && window.self !== window.top) {
+          const popup = window.open(
+            "",
+            "_blank",
+            "popup=yes,width=1,height=1,right=-10000,bottom=-10000",
+          );
 
-        //   const sandboxed =
-        //     !popup || popup.closed || typeof popup.closed === "undefined";
+          const sandboxed =
+            !popup || popup.closed || typeof popup.closed === "undefined";
 
-        //   if (popup && !sandboxed) {
-        //     popup.close();
-        //   }
+          if (popup && !sandboxed) {
+            popup.close();
+          }
 
-        //   setCheckedSandbox(true);
+          setCheckedSandbox(true);
 
-        //   if (sandboxed) {
-        //     setIsSandboxed(true);
-        //     return;
-        //   }
-        // }
+          if (sandboxed) {
+            setIsSandboxed(true);
+            return;
+          }
+        }
 
         if (color !== "305CDE") {
           triggerAd();
