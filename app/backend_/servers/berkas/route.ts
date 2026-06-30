@@ -97,9 +97,12 @@ export async function GET(req: NextRequest) {
     const qs = new URLSearchParams({
       tmdb: tmdbId,
       type: mediaType,
-      ...(season && { season }),
-      ...(episode && { episode }),
     });
+
+    if (mediaType === "tv") {
+      qs.set("season", season!);
+      qs.set("episode", episode!);
+    }
 
     const res = await fetchWithTimeout(
       `${STREAMDATA_URL}?${qs.toString()}`,
@@ -134,12 +137,15 @@ export async function GET(req: NextRequest) {
       resolution: streamUrls.length - i,
     }));
 
-    const subtitles = (data?.default_subs ?? []).map((sub: any) => ({
-      id: sub.sid ?? sub.id,
-      display: sub.language ?? sub.display,
-      file: `${sub.url ?? sub.file}`,
-    }));
-
+    const subtitles = (data?.default_subs ?? []).map(
+      (sub: any, index: number) => ({
+        id: sub.sid ?? sub.id ?? index,
+        display:
+          sub.lang ?? sub.language ?? sub.display ?? sub.code ?? "Unknown",
+        language: sub.code ?? "",
+        file: sub.url ?? sub.file,
+      }),
+    );
     logRequest(200, "OK!!!!!");
     return NextResponse.json({ success: true, links, subtitles });
   } catch (err: any) {
