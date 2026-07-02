@@ -13,8 +13,12 @@ const supabase = createClient(
   process.env.SUPABASE_URL_BERKAS!,
   process.env.SUPABASE_SERVICE_ROLE_KEY_BERKAS!,
 );
-
+// /workers/subdomain
 const PROXY_WORKERS = [
+  "https://berkas.test047-123.workers.dev/",
+  "https://berkas.test049-123.workers.dev/",
+  "https://berkas.test050-123.workers.dev/",
+  "https://berkas.test048-123.workers.dev/",
   "https://berkas.test045.workers.dev/",
   "https://berkas.test046-43r.workers.dev/",
 
