@@ -14,6 +14,8 @@ export type TmdbDetailsResponse = {
   poster_path: string;
   backdrop_paths: string[];
   logo_paths: string[];
+  trailer: string | null;
+  cast: CastMember[];
   cache: boolean;
 };
 
@@ -26,4 +28,11 @@ export type SeasonsType = {
 export type Genre = {
   id: number;
   name: string;
+};
+
+export type CastMember = {
+  id: number;
+  name: string;
+  character: string;
+  profile_path: string | null;
 };

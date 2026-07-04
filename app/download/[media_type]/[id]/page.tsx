@@ -89,7 +89,15 @@ export default function MovieDetails() {
   const title = data?.title || "";
   const genres = data?.genres ?? [];
   const overview = data?.overview;
-  const backdrop = data?.backdrop_path;
+  const backdropArray = data?.backdrop_paths || [];
+  const [backdropIndex, setBackdropIndex] = useState(0);
+  useEffect(() => {
+    if (!backdropArray.length) return;
+    setBackdropIndex(Math.floor(Math.random() * backdropArray.length));
+  }, [data?.id]);
+
+  const backdrop = backdropArray[backdropIndex] ?? null;
+
   const poster = data?.poster_path;
   const rating = data?.rating || 0;
   const imdbId = data?.imdb_id ?? null;

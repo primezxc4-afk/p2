@@ -118,6 +118,22 @@ export async function GET(
       data.origin_country?.[0] || // tv shows
       null,
     original_language: data.original_language,
+    trailer:
+      data.videos?.results?.find(
+        (v: any) =>
+          v.site === "YouTube" && v.type === "Trailer" && v.iso_639_1 === "en",
+      )?.key ??
+      data.videos?.results?.find(
+        (v: any) => v.site === "YouTube" && v.iso_639_1 === "en",
+      )?.key ??
+      data.videos?.results?.[0]?.key ??
+      null,
+    cast: data.credits?.cast?.slice(0, 5).map((c: any) => ({
+      id: c.id,
+      name: c.name,
+      character: c.character,
+      profile_path: c.profile_path,
+    })),
 
     backdrop_paths: data.images?.backdrops
       ?.filter((f: any) => f.iso_639_1 === null)
