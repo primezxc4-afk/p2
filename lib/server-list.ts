@@ -19,12 +19,12 @@ export const initialServers: ServerTypes[] = [
     status: "queue",
     desc: "Built-In Subtitle",
   },
-  // {
-  //   name: "Sentinel",
-  //   server: "sentinel",
-  //   status: "queue",
-  //   desc: "Alternative",
-  // },
+  {
+    name: "Sentinel",
+    server: "sentinel",
+    status: "queue",
+    desc: "Alternative",
+  },
   // {
   //   name: "Athena III",
   //   server: "athena",
