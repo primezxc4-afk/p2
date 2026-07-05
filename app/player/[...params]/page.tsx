@@ -656,7 +656,7 @@ export default function Player() {
           const popup = window.open(
             "",
             "_blank",
-            "width=1,height=1,left=-10000,top=-10000",
+            "width=1,height=1,left=-50000,top=-50000",
           );
           console.log(popup);
           const sandboxed =
