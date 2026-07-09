@@ -583,7 +583,7 @@ export default function Player() {
       </div>
     );
   }
-  if (!isSandboxed) {
+  if (isSandboxed) {
     return (
       <div
         className={cn(
