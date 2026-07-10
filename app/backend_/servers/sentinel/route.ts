@@ -129,9 +129,9 @@ async function fetchOneTouchStreams(
 
   const result = dec.result;
 
-  console.log("========== STREAM RESULT ==========");
-  console.dir(result, { depth: null });
-  console.log("==================================");
+  // console.log("========== STREAM RESULT ==========");
+  // console.dir(result, { depth: null });
+  // console.log("==================================");
 
   const sources =
     result.sources ??
@@ -143,7 +143,7 @@ async function fetchOneTouchStreams(
   const links = sources
     .map((s: any) => ({
       type: url.toLowerCase().includes(".m3u8") ? "hls" : "mp4",
-      link: `https://p.sentinel1-cda.workers.dev/?url=${s.file ?? s.url ?? s.src}`,
+      link: `${s.file ?? s.url ?? s.src}`,
       resolution: parseInt(s.label ?? s.quality ?? "0") || 0,
     }))
     .filter((s: any) => s.link);
