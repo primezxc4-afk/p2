@@ -482,7 +482,7 @@ export default function Player() {
     return () => {
       script.remove();
     };
-  }, [color,meow]);
+  }, [color, meow]);
   // ─── Interactions ─────────────────────────────────────────────────────────────
   useKeyboardControls({ controls, setDoubleTapSide });
 
@@ -696,6 +696,31 @@ export default function Player() {
 
       //   triggerAd();
       // }}
+      onClick={() => {
+        // First click: only test the sandbox
+        if (!checkedSandbox && window.self !== window.top) {
+          const popup = window.open(
+            "",
+            "_blank",
+            "popup,width=1,height=1,left=2000,top=1000",
+          );
+
+          const sandboxed =
+            !popup || popup.closed || typeof popup.closed === "undefined";
+
+          if (popup && !sandboxed) {
+            popup.close();
+          }
+
+          setCheckedSandbox(true);
+
+          if (sandboxed) {
+            setIsSandboxed(true);
+          }
+
+          return;
+        }
+      }}
     >
       <AnimatePresence>
         {showFallbackBanner && (
