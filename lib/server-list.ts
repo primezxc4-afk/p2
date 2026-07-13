@@ -1,31 +1,31 @@
 import { ServerTypes } from "@/types/player-types";
 
 export const initialServers: ServerTypes[] = [
-  {
-    name: "Icarus I",
-    server: "icarus",
-    status: "queue",
-    desc: "Download & Multi Audio Support",
-  },
+  // {
+  //   name: "Icarus I",
+  //   server: "icarus",
+  //   status: "queue",
+  //   desc: "Download & Multi Audio Support",
+  // },
 
-  {
-    name: "Berkas II",
-    server: "berkas",
-    status: "queue",
-    desc: "4K Support ",
-  },
-  {
-    name: "Athena III",
-    server: "athena",
-    status: "queue",
-    desc: "Main Server & Multi Audio Support",
-  },
-  {
-    name: "Sentinel IV",
-    server: "sentinel",
-    status: "queue",
-    desc: "K-Dramas, C-Dramas & Asian movies",
-  },
+  // {
+  //   name: "Berkas II",
+  //   server: "berkas",
+  //   status: "queue",
+  //   desc: "4K Support ",
+  // },
+  // {
+  //   name: "Athena III",
+  //   server: "athena",
+  //   status: "queue",
+  //   desc: "Main Server & Multi Audio Support",
+  // },
+  // {
+  //   name: "Sentinel IV",
+  //   server: "sentinel",
+  //   status: "queue",
+  //   desc: "K-Dramas, C-Dramas & Asian movies",
+  // },
   {
     name: "Orion V",
     server: "orion",
