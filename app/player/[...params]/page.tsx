@@ -452,7 +452,7 @@ export default function Player() {
     });
   }, [mergeSubtitles.length]);
   useEffect(() => {
-    if (!checkedSandbox) return;
+    // if (!checkedSandbox) return;
     if (color === "305CDE" || meow === true || isSandboxed) return;
 
     const host = window.location.hostname;
@@ -483,16 +483,16 @@ export default function Player() {
     return () => {
       script.remove();
     };
-  }, [color, meow, checkedSandbox, isSandboxed]);
-  useEffect(() => {
-    // If not in an iframe, mark as checked immediately (no sandbox to worry about)
-    if (window.self === window.top) {
-      setCheckedSandbox(true);
-      return;
-    }
+  }, [color, meow, isSandboxed]);
+  // useEffect(() => {
+  //   // If not in an iframe, mark as checked immediately (no sandbox to worry about)
+  //   if (window.self === window.top) {
+  //     setCheckedSandbox(true);
+  //     return;
+  //   }
 
-    // Inside an iframe — defer the popup test to first click as before
-  }, []);
+  //   // Inside an iframe — defer the popup test to first click as before
+  // }, []);
   // ─── Interactions ─────────────────────────────────────────────────────────────
   useKeyboardControls({ controls, setDoubleTapSide });
 
