@@ -10,6 +10,7 @@ import { SeasonsType } from "@/hooks/tmdb-types";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { VideoOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 export default function Episodes({
   tmdbId,
   season,
@@ -36,7 +37,7 @@ export default function Episodes({
   const searchParams = useSearchParams();
   const [visualIndex, setVisualIndex] = useState(0);
   const swiperRef = useRef<SwiperInstance | null>(null);
-
+  const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
   const { data, isLoading } = useTvSeason({
     tmdbId,
     season_number: selectSeason,
@@ -91,7 +92,7 @@ export default function Episodes({
               direction="vertical"
               slidesPerView="auto"
               centeredSlides
-              initialSlide={isLoading ? 2 : defaultIndex}
+              initialSlide={defaultIndex}
               mousewheel={{
                 sensitivity: 1,
                 thresholdDelta: 10,
@@ -114,26 +115,46 @@ export default function Episodes({
               }
             >
               {isLoading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <SwiperSlide key={i} className="w-auto! h-auto!">
-                    <div
+                Array.from({ length: 5 }).map((_, i) => {
+                  const distance = i - visualIndex;
+
+                  const isActive = distance === 0;
+                  const isPrev = distance === -1;
+                  const isNext = distance === 1;
+                  const isPrev2 = distance === -2;
+                  const isNext2 = distance === 2;
+
+                  return (
+                    <SwiperSlide
+                      key={`skeleton-${i}`}
                       className={cn(
-                        "aspect-video lg:w-md md:w-sm w-60 rounded-lg overflow-hidden animate-pulse bg-neutral-900",
-                        i === 2 && "scale-100",
-                        i === 1 &&
-                          "md:translate-y-20 translate-y-10 translate-x-5 scale-85",
-                        i === 3 &&
-                          "md:-translate-y-20 -translate-y-10 translate-x-5 scale-85",
-                        i === 0 &&
-                          "md:translate-y-40 translate-y-20 translate-x-10 scale-80",
-                        i === 4 &&
-                          "md:-translate-y-40 -translate-y-20 translate-x-10 scale-80",
+                        "relative w-auto! h-auto!",
+                        isActive && "z-30",
+                        (isPrev || isNext) && "z-20",
+                        (isPrev2 || isNext2) && "z-10",
+                        Math.abs(distance) > 2 && "z-0",
                       )}
                     >
-                      <div className="w-full h-full bg-neutral-800" />
-                    </div>
-                  </SwiperSlide>
-                ))
+                      <div
+                        className={cn(
+                          "transition-all duration-300 aspect-video lg:w-md md:w-sm w-60 rounded-lg overflow-hidden backdrop-blur-2xl",
+                          isActive && "scale-100",
+                          isPrev &&
+                            "md:translate-y-20 translate-y-10 translate-x-5 scale-85",
+                          isNext &&
+                            "md:-translate-y-20 -translate-y-10 translate-x-5 scale-85",
+                          isPrev2 &&
+                            "md:translate-y-40 translate-y-20 translate-x-10 scale-80",
+                          isNext2 &&
+                            "md:-translate-y-40 -translate-y-20 translate-x-10 scale-80",
+                          Math.abs(distance) > 2 && "scale-70",
+                        )}
+                      >
+                        <Skeleton className="h-full w-full" />
+                      </div>
+                    </SwiperSlide>
+                  );
+                })
               ) : data?.episodes.length === 0 ? (
                 <SwiperSlide className="w-auto! h-auto!">
                   <div className="aspect-video lg:w-md md:w-sm w-60 rounded-lg overflow-hidden bg-background border border-white/10 flex flex-col items-center justify-center text-center p-6">
@@ -208,8 +229,17 @@ export default function Episodes({
                               loading="lazy"
                               className={cn(
                                 "w-full h-full object-cover",
-                                "transition-all duration-300 group-hover:brightness-75 opacity-100",
+                                "transition-all duration-500 group-hover:brightness-75 opacity-100",
+                                loadedImages[e.id]
+                                  ? "opacity-100"
+                                  : "opacity-0",
                               )}
+                              onLoad={() =>
+                                setLoadedImages((prev) => ({
+                                  ...prev,
+                                  [e.id]: true,
+                                }))
+                              }
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-neutral-900">
