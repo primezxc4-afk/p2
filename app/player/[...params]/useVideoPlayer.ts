@@ -510,7 +510,9 @@ export function useVideoPlayer({
       if (!v) return;
       v.currentTime = time;
       setCurrentTime(time);
-      if (time >= duration) setPlayback((p) => ({ ...p, ended: true }));
+      if (duration > 0 && time >= duration) {
+        setPlayback((p) => ({ ...p, ended: true }));
+      }
     },
     [duration],
   );

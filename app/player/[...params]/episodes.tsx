@@ -197,6 +197,7 @@ export default function Episodes({
                     >
                       <Link
                         href={`/player/tv/${tmdbId}/${selectSeason}/${e.episode_number}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`}
+                        replace
                         onClick={closeDrawer}
                         className="group"
                       >

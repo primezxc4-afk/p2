@@ -475,6 +475,7 @@ export default function MainControls({
                     "hidden lg:block",
                   )}
                   href={`/player/tv/${tmdbId}/${nextSeason}/${nextEpisode}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`}
+                  replace
                 >
                   Next Episode S{nextSeason}-E{nextEpisode}
                 </Link>

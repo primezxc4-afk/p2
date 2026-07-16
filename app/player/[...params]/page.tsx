@@ -441,7 +441,7 @@ export default function Player() {
 
   useEffect(() => {
     if (canNext && playback.ended) {
-      router.push(`/player/tv/${tmdbId}/${nextSeason}/${nextEpisode}`);
+      router.replace(`/player/tv/${tmdbId}/${nextSeason}/${nextEpisode}`);
     }
   }, [playback.ended]);
 
