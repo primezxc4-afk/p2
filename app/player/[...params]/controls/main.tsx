@@ -155,7 +155,7 @@ export default function MainControls({
   const [hoverX, setHoverX] = useState(0);
   const [open, setOpen] = useState(false);
   const [selectSeason, setSeasonSelect] = useState(season);
-  console.log("meow");
+ 
   const handleSliderHover = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!sliderRef.current || !duration) return;
 

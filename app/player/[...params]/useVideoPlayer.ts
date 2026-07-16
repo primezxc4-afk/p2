@@ -158,25 +158,13 @@ export function useVideoPlayer({
       hls.on(Hls.Events.ERROR, (_, data) => {
         if (!data.fatal) return;
 
-        const status = data.response?.code;
-        if (status === 404 || status === 403) {
-          hls.destroy();
-          handleServerFail();
+        if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+          hls.recoverMediaError();
           return;
         }
-        switch (data.type) {
-          case Hls.ErrorTypes.NETWORK_ERROR:
-            hls.startLoad();
-            break;
 
-          case Hls.ErrorTypes.MEDIA_ERROR:
-            hls.recoverMediaError();
-            break;
-
-          default:
-            hls.destroy();
-            handleServerFail();
-        }
+        hls.destroy();
+        handleServerFail();
       });
       hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
         video.play().catch(() => {});
