@@ -7,6 +7,7 @@ const ALLOWED_REFERERS = [
   //
   "https://zxcprime.xyz/",
   "https://www.zxcprime.xyz/",
+  "https://v1.zxcprime.xyz/",
   //
   "https://zxcprime.site/",
   "https://www.zxcprime.site/",
@@ -39,6 +40,7 @@ export const ALLOWED_ORIGINS = [
   //
   "https://zxcprime.xyz",
   "https://www.zxcprime.xyz",
+  "https://v1.zxcprime.xyz",
   //
   "https://zxcprime.site",
   "https://www.zxcprime.site",
