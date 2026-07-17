@@ -156,36 +156,6 @@ export default function Player() {
   const seasons = metadata?.seasons ?? [];
   const logo = metadata?.logo_paths?.[0] ?? null;
 
-  useEffect(() => {
-    window.parent.postMessage(
-      {
-        type: "METADATA",
-        payload: {
-          movie_id,
-          media_type,
-          season: media_type === "tv" ? season : null,
-          episode: media_type === "tv" ? episode : null,
-          title,
-          year,
-          genre,
-          poster,
-          backdrop,
-        },
-      },
-      "*",
-    );
-  }, [
-    movie_id,
-    media_type,
-    season,
-    episode,
-    title,
-    year,
-    genre,
-    poster,
-    backdrop,
-  ]);
-
   // ─── Source ──────────────────────────────────────────────────────────────────
   const {
     data: source,
@@ -276,6 +246,20 @@ export default function Player() {
   const timer = isMobile ? 5000 : 3000;
   const { isVisible, resetTimer, setIsVisible, lockTimer } =
     useHiddenOverlay(timer);
+
+  useEffect(() => {
+    if (window.self === window.top) return;
+
+    window.parent.postMessage(
+      {
+        type: "OVERLAY_VISIBILITY",
+        payload: {
+          isVisible,
+        },
+      },
+      "*",
+    );
+  }, [isVisible]);
 
   // ─── Next Episode ────────────────────────────────────────────────────────────
   const allSeason = metadata?.seasons?.length ?? 0;
@@ -472,7 +456,7 @@ export default function Player() {
     typeof document !== "undefined" &&
     window.self !== window.top &&
     document.referrer.includes("xullys.xyz");
-
+  console.log();
   useAdsScript({
     enabled: !(isPartner || meow),
     platform: "profiton",
