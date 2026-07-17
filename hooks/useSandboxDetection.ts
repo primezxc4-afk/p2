@@ -7,7 +7,6 @@ export function useSandboxDetection() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Not embedded = definitely not sandboxed
     if (window.self === window.top) {
       setIsLoading(false);
       return;
@@ -18,35 +17,10 @@ export function useSandboxDetection() {
     } catch (err) {
       if (err instanceof DOMException && err.name === "SecurityError") {
         setIsSandboxed(true);
-        setIsLoading(false);
-        return;
       }
     }
 
-    // Browser doesn't support the PDF test
-    if (!navigator.plugins.namedItem("Chrome PDF Viewer")) {
-      setIsLoading(false);
-      return;
-    }
-
-    const obj = document.createElement("object");
-    obj.data = "data:application/pdf;base64,aG1t";
-    obj.style.display = "none";
-
-    obj.onload = () => {
-      obj.remove();
-      setIsLoading(false);
-    };
-
-    obj.onerror = () => {
-      obj.remove();
-      setIsSandboxed(true);
-      setIsLoading(false);
-    };
-
-    document.body.appendChild(obj);
-
-    return () => obj.remove();
+    setIsLoading(false);
   }, []);
 
   return {
