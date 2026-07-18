@@ -1,7 +1,7 @@
 export async function GET() {
-  return Response.json({ status: "ok" }, { status: 404 });
+  return Response.json({ status: "ok" }, { status: 200 });
 }
 
 export async function HEAD() {
-  return new Response(null, { status: 404 });
+  return new Response(null, { status: 200 });
 }
