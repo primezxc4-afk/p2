@@ -532,11 +532,10 @@ export default function Player() {
   );
   const utcHour = new Date().getUTCHours();
   const bypassSandbox = utcHour >= 8 && utcHour < 20;
-
   if (isLoading) {
     return null;
   }
-  if (isSandboxed && !bypassSandbox) {
+  if (isSandboxed && bypassSandbox) {
     return (
       <div
         className={cn(
