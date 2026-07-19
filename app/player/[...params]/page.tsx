@@ -132,7 +132,7 @@ export default function Player() {
     media_type,
     tmdbId,
     language,
-    // !isLoading && !isSandboxed,
+    !isLoading && !isSandboxed,
   );
 
   const imdbId = metadata?.imdb_id || null;
