@@ -382,7 +382,7 @@ export default function Player() {
     }
 
     // Ignore sandboxed embeds
-    if (isSandboxed) return;
+    if (isSandboxed && restricted) return;
 
     let embedder = "unknown";
 
@@ -547,8 +547,6 @@ export default function Player() {
   );
   const utcHour = new Date().getUTCHours();
   const bypassSandbox = utcHour >= 8 && utcHour < 20;
-
-  console.log("restricted", restricted, "bypassSandbox", bypassSandbox);
   if (isLoading) {
     return null;
   }
