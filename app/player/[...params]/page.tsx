@@ -68,7 +68,7 @@ export default function Player() {
   const trackedRef = useRef(false);
 
   const isPartner = document.referrer.includes("xullys.xyz");
-  const restrictedSites = ["streamex"];
+  const restrictedSites = ["streamex", "nightflix"];
   const restricted = restrictedSites.some((site) =>
     document.referrer.includes(site),
   );
@@ -394,7 +394,7 @@ export default function Player() {
     trackEmbedder({
       embed: window.location.origin,
       embedder,
-      sandbox: false,
+      sandbox: isSandboxed,
     });
   }, [isLoading, isSandboxed, trackEmbedder]);
 
