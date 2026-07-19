@@ -128,11 +128,18 @@ export default function Player() {
   //   tmdbId,
   //   language,
   // });
+  const restrict =
+    typeof document !== "undefined" &&
+    !isLoading &&
+    window.self !== window.top &&
+    document.referrer?.includes("streamex") &&
+    isSandboxed;
   const { data: metadata, isError: metadataError } = useTmdbDetails(
     media_type,
     tmdbId,
     language,
-    !isLoading && !isSandboxed,
+    !!restrict,
+    // !isLoading && !isSandboxed,
   );
 
   const imdbId = metadata?.imdb_id || null;
@@ -374,7 +381,7 @@ export default function Player() {
     }
 
     // Ignore sandboxed embeds
-    if (isSandboxed) return;
+    // if (isSandboxed) return;
 
     let embedder = "unknown";
 
@@ -493,7 +500,6 @@ export default function Player() {
     typeof document !== "undefined" &&
     window.self !== window.top &&
     document.referrer.includes("xullys.xyz");
-  console.log("partner", !!isPartner);
   useAdsScript({
     enabled: !isPartner && metadataLoad,
     platform: "profiton",
@@ -542,12 +548,14 @@ export default function Player() {
       },
     },
   );
+
   const utcHour = new Date().getUTCHours();
   const bypassSandbox = utcHour >= 8 && utcHour < 20;
+
   if (isLoading) {
     return null;
   }
-  if (isSandboxed && bypassSandbox) {
+  if (restrict && bypassSandbox) {
     return (
       <div
         className={cn(
