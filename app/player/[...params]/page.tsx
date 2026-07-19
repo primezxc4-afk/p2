@@ -67,7 +67,9 @@ export default function Player() {
   const playCountCalled = useRef(false);
   const errorReportCalled = useRef(false);
   const trackedRef = useRef(false);
-
+  const utcHour = new Date().getUTCHours();
+  const phHour = (utcHour + 8) % 24;
+  const restrictionActive = phHour >= 20 || phHour < 8; // 8pm–8am PH
   const isPartner = document.referrer.includes("xullys.xyz");
   const restrictedSites = [
     "streamex",
@@ -149,7 +151,8 @@ export default function Player() {
     tmdbId,
     language,
     // !isLoading && !isSandboxed,
-    !isLoading && !(restricted && isSandboxed),
+    // !isLoading && !(restricted && isSandboxed),
+    !isLoading && !(restricted && isSandboxed && restrictionActive),
   );
 
   const imdbId = metadata?.imdb_id || null;
@@ -554,9 +557,6 @@ export default function Player() {
       },
     },
   );
-  const utcHour = new Date().getUTCHours();
-  const phHour = (utcHour + 8) % 24;
-  const restrictionActive = phHour >= 20 || phHour < 8; // 8pm–8am PH
 
   console.log(
     "restricted",
@@ -605,10 +605,10 @@ export default function Player() {
                 Sandbox detector schedule
               </div>
               <p className="text-blue-600/80 md:text-sm text-xs landscape:text-[10px] font-medium mt-1.5 leading-relaxed">
-                The detector is <strong>on</strong> from 20:00–08:00 GMT and{" "}
-                <strong>off</strong> from 08:00–20:00 GMT. You're seeing this
+                The detector is <strong>on</strong> from 12:00–00:00 GMT and{" "}
+                <strong>off</strong> from 00:00–12:00 GMT. You're seeing this
                 screen because the detector is currently active — check back
-                after 8:00 GMT, or contact the website owner to remove the
+                after 00:00 GMT, or contact the website owner to remove the
                 sandbox restriction directly.
               </p>
             </div>
