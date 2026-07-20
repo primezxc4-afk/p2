@@ -8,9 +8,14 @@ export interface Embedder {
   embed: string;
   embedder: string;
   sandbox: boolean;
+
   load_count: number;
+  load_today: number;
+  last_load_date: string;
+
   last_seen: string;
   created_at: string;
+
   status: "Active" | "Inactive";
 }
 

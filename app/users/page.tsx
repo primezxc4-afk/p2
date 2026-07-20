@@ -29,6 +29,7 @@ type SortKey =
   | "embedder"
   | "sandbox"
   | "load_count"
+  | "load_today"
   | "last_seen"
   | "status";
 type SortDir = "asc" | "desc";
@@ -37,7 +38,9 @@ const columns: { key: SortKey; label: string }[] = [
   { key: "embed", label: "Embed" },
   { key: "embedder", label: "Embedder" },
   { key: "sandbox", label: "Sandbox" },
-  { key: "load_count", label: "Loads" },
+
+  { key: "load_today", label: "Today/Total" },
+
   { key: "last_seen", label: "Last seen" },
   { key: "status", label: "Status" },
 ];
@@ -75,6 +78,8 @@ export default function EmbeddersTable() {
   const sandboxed = data?.embedders.filter((e) => e.sandbox).length ?? 0;
   const totalLoads =
     data?.embedders.reduce((sum, e) => sum + e.load_count, 0) ?? 0;
+  const totalLoadsToday =
+    data?.embedders.reduce((sum, e) => sum + e.load_today, 0) ?? 0;
   const sandboxLoads =
     data?.embedders
       .filter((e) => e.sandbox)
@@ -153,6 +158,9 @@ export default function EmbeddersTable() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-semibold">{totalLoads}</div>
+            <p className="text-xs text-slate-500">
+              {totalLoadsToday} loads today
+            </p>
             <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-slate-100">
               <div
                 className="bg-amber-500"
@@ -231,7 +239,10 @@ export default function EmbeddersTable() {
                 </div>
               </TableCell>
               <TableCell>{e.sandbox ? "Yes" : "No"}</TableCell>
-              <TableCell>{e.load_count}</TableCell>
+              <TableCell>
+                {e.load_today} / {e.load_count}
+              </TableCell>
+
               <TableCell>{new Date(e.last_seen).toLocaleString()}</TableCell>
               <TableCell>
                 <span

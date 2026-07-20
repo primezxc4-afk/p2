@@ -78,7 +78,7 @@ export default function Player() {
     "nightflix",
     "zxcstream",
     "redflix",
-    // "pantyflix",
+    "pantyflix",
     // "vibemax",
     // "cinevibe",
     // "streamgoblin",
