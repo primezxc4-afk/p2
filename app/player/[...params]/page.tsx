@@ -84,6 +84,7 @@ export default function Player() {
     "streamgoblin",
     "bingebox",
     "raflix",
+    "ra-media",
   ];
   const restricted = restrictedSites.some((site) =>
     document.referrer.includes(site),
