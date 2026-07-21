@@ -63,31 +63,6 @@ function getRandomAfricanIP() {
   return `${base[0]}.${base[1]}.${rand()}.${rand()}`;
 }
 
-export async function getWorkingProxy(
-  url: string,
-  proxies: string[],
-  origin: string,
-) {
-  const shuffledProxies = shuffle(proxies);
-  if (!shuffledProxies.length) return null;
-
-  for (const proxy of shuffledProxies) {
-    try {
-      const res = await fetchWithTimeout(
-        `${origin}${proxy}?url=${encodeURIComponent(url)}`,
-        { method: "HEAD", headers: { Range: "bytes=0-1" } },
-        3000,
-      );
-      console.log(`${origin}${proxy}?url=${encodeURIComponent(url)}`);
-      if (res.ok) {
-        return proxy;
-      }
-    } catch (e: any) {
-      console.log(`[PROXY] ✗${origin}${proxy}?url=${encodeURIComponent(url)}`);
-    }
-  }
-  return null;
-}
 export async function GET(req: NextRequest) {
   const logRequest = (status: number, reason: string) => {
     const tmdbId = req.nextUrl.searchParams.get(FIELD_MAP.id);
@@ -99,7 +74,7 @@ export async function GET(req: NextRequest) {
       `[ICARUS] ${tmdbId}/${mediaType}${extra} | ${status} | ${reason}`,
     );
   };
-  const origin = "https://v-zxc-stream-xyz.up.railway.app/";
+  const origin = req.nextUrl.origin;
 
   try {
     const tmdbId = req.nextUrl.searchParams.get(FIELD_MAP.id);
@@ -488,18 +463,6 @@ export async function GET(req: NextRequest) {
       //
       "/backend_/servers/icarus/proxy/",
     ];
-    const workingProxy = await getWorkingProxy(
-      sortedDownloads[0].url,
-      proxies,
-      origin,
-    );
-    if (!workingProxy) {
-      logRequest(502, "no working proxy");
-      return NextResponse.json(
-        { success: false, error: "No working proxy available" },
-        { status: 502 },
-      );
-    }
 
     if (!cachedDownloads) {
       await supabase.from("moviebox_downloads_cache").upsert(
@@ -529,7 +492,7 @@ export async function GET(req: NextRequest) {
           format: d.format,
           size: d.size,
           type: d.url.includes(".m3u8") ? "hls" : "mp4",
-          link: `${workingProxy}?url=${encodeURIComponent(d.url)}`,
+          link: `${proxies[0]}?url=${encodeURIComponent(d.url)}`,
         };
       }),
     );
