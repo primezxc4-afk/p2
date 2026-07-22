@@ -7,7 +7,7 @@ export default function DevToolGuard() {
     import("disable-devtool").then((m) =>
       m.default({
         disableMenu: true,
-        tkName: "debug", // your custom param name
+        tkName: "zxc", // your custom param name
         md5: "68934a3e9455fa72420237eb05902327", // md5 of the bypass value
         url: "https://zxcstream.xyz",
       }),

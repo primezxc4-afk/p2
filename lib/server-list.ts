@@ -8,7 +8,7 @@ export const initialServers: ServerTypes[] = [
     desc: "Download & Multi Audio Support",
   },
   {
-    name: "Orion II",
+    name: "Kokuu II",
     server: "orion",
     status: "queue",
     desc: "Built-In Subtitle",
