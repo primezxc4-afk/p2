@@ -30,7 +30,6 @@ import { useTmdbDetails } from "@/hooks/fetch-details";
 import { useAdStore2 } from "@/zustand/ad-store2";
 import { useIntro } from "@/hooks/intro";
 import { SkipSegment } from "./controls/skip_segment";
-import useSubtitle from "@/hooks/subs";
 import { useAdsScript } from "@/hooks/useAdsScript";
 import { useSandboxDetection } from "@/hooks/useSandboxDetection";
 import { useTrackEmbedder } from "@/hooks/useTrackEmbedder";
@@ -192,13 +191,13 @@ export default function Player() {
     dubType: dub || dubLang ? (dub ? type : dubType) : "",
   });
 
-  const { data: subtitles = [], isLoading: subtitlesLoading } = useSubtitle({
-    tmdbId,
-    media_type,
-    season,
-    episode,
-    enable: metadataLoad, // or tie it to source being loaded
-  });
+  // const { data: subtitles = [], isLoading: subtitlesLoading } = useSubtitle({
+  //   tmdbId,
+  //   media_type,
+  //   season,
+  //   episode,
+  //   enable: metadataLoad, // or tie it to source being loaded
+  // });
   const { data: introData } = useIntro({
     imdbId,
     tmdbId,
@@ -215,11 +214,7 @@ export default function Player() {
     enabled: metadataLoad,
   });
   const dubs = source?.dubs || [];
-  const mergeSubtitles = [
-    ...subtitles,
-    ...(source?.subtitles || []),
-    ...openSubtitleData,
-  ];
+  const mergeSubtitles = [...(source?.subtitles || []), ...openSubtitleData];
 
   const isAuto = sourceQualityId === "auto" ? "0" : sourceQualityId;
   // ─── Video Player ────────────────────────────────────────────────────────────
@@ -349,27 +344,27 @@ export default function Player() {
     return () => clearTimeout(timer);
   }, [source?.fallback, playback.canPlay]);
 
-  useEffect(() => {
-    if (!playback.canPlay) return;
-    if (fetchServer.server !== "icarus") return;
-    if (playCountCalled.current) return;
-    if (!source?.active) return;
+  // useEffect(() => {
+  //   if (!playback.canPlay) return;
+  //   if (fetchServer.server !== "icarus") return;
+  //   if (playCountCalled.current) return;
+  //   if (!source?.active) return;
 
-    playCountCalled.current = true;
+  //   playCountCalled.current = true;
 
-    fetch("/backend_/servers/icarus/report_play", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        tmdbId,
-        mediaType: media_type,
-        season: media_type === "tv" ? season : "",
-        episode: media_type === "tv" ? episode : "",
-        dub: source.active.langCode,
-        type: source.active.langType,
-      }),
-    });
-  }, [playback.canPlay, source?.active]);
+  //   fetch("/backend_/servers/icarus/report_play", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       tmdbId,
+  //       mediaType: media_type,
+  //       season: media_type === "tv" ? season : "",
+  //       episode: media_type === "tv" ? episode : "",
+  //       dub: source.active.langCode,
+  //       type: source.active.langType,
+  //     }),
+  //   });
+  // }, [playback.canPlay, source?.active]);
 
   useEffect(() => {
     if (trackedRef.current) return;
@@ -742,21 +737,22 @@ export default function Player() {
           onCanPlayThrough={handleCanPlay}
           onError={(e) => {
             handleServerFail();
-            if (fetchServer.server === "icarus" && !errorReportCalled.current) {
-              errorReportCalled.current = true;
-              fetch("/backend_/servers/icarus/report_error", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  tmdbId,
-                  mediaType: media_type,
-                  season: media_type === "tv" ? season : "",
-                  episode: media_type === "tv" ? episode : "",
-                  dub: source?.active?.langCode,
-                  type: source?.active?.langType,
-                }),
-              });
-            }
+
+            // if (fetchServer.server === "icarus" && !errorReportCalled.current) {
+            //   errorReportCalled.current = true;
+            //   fetch("/backend_/servers/icarus/report_error", {
+            //     method: "POST",
+            //     headers: { "Content-Type": "application/json" },
+            //     body: JSON.stringify({
+            //       tmdbId,
+            //       mediaType: media_type,
+            //       season: media_type === "tv" ? season : "",
+            //       episode: media_type === "tv" ? episode : "",
+            //       dub: source?.active?.langCode,
+            //       type: source?.active?.langType,
+            //     }),
+            //   });
+            // }
           }}
           autoPlay={auto_play && autoplay === "on"}
           muted={auto_play && autoplay === "on"}

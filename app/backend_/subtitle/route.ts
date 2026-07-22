@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateBackendToken } from "@/lib/validate-token";
-import { isValidReferer } from "@/lib/allowed-referers";
 import { createClient } from "@supabase/supabase-js";
 import { FIELD_MAP } from "@/lib/token";
 
