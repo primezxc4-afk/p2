@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateBackendToken } from "@/lib/validate-token";
-import { isValidReferer } from "@/lib/allowed-referers";
 import { fetchWithTimeout } from "@/lib/fetch-timeout";
 import { FIELD_MAP } from "@/lib/token";
+import { createClient } from "@supabase/supabase-js";
 
+const supabase = createClient(
+  process.env.SUPABASE_URL_ONE!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY_ONE!,
+);
 const ONETOUCH_API = "https://api3.devcorp.me/web/vod";
 const ENC_DEC_API = "https://enc-dec.app/api";
 
@@ -13,19 +17,24 @@ const HEADERS = {
 };
 
 async function fetchOneTouchStreams(
-  tmdbId: string,
   mediaType: string,
   season: string | null,
   episode: string | null,
   title: string,
+  year: string,
 ): Promise<{ links: any[]; subtitles: any[] }> {
-  // -----------------------------
   // Search
-  // -----------------------------
+  const keyword = `${title}`.toLowerCase();
+
+  // console.log({
+  //   mediaType,
+  //   title,
+  //   normalizedTitle: keyword,
+  //   season,
+  //   wantedSeason: season,
+  // });
   const searchEncrypted = await fetchWithTimeout(
-    `https://api3.devcorp.me/vod/search?page=1&keyword=${encodeURIComponent(
-      title,
-    )}`,
+    `https://api3.devcorp.me/vod/search?page=1&keyword=${encodeURIComponent(keyword)}`,
     {
       headers: HEADERS,
     },
@@ -47,15 +56,14 @@ async function fetchOneTouchStreams(
   ).then((r) => r.json());
 
   if (searchDec.status !== 200 || !searchDec.result) {
-    throw new Error(`Search decrypt failed: ${searchDec.error ?? "unknown"}`);
+    return {
+      links: [],
+      subtitles: [],
+    };
   }
 
-  // console.log("========== SEARCH RESULT ==========");
-  // console.dir(searchDec.result, { depth: null });
-  // console.log("==================================");
-
   const results = Array.isArray(searchDec.result) ? searchDec.result : [];
-
+  // console.log(results);
   const normalizedTitle = title
     .replace(/\s*\(\d{4}\)/g, "")
     .trim()
@@ -77,29 +85,36 @@ async function fetchOneTouchStreams(
             item.type === "movie" && cleanTitle(item.title) === normalizedTitle,
         )
       : results.find((item: any) => {
-          if (cleanTitle(item.title) !== normalizedTitle) return false;
-
+          const cleaned = cleanTitle(item.title);
           const m = item.title.match(/Season\s+(\d+)/i);
+          const seasonNumber = m ? Number(m[1]) : 1;
 
-          // No season in title = Season 1
-          if (!m) return wantedSeason === 1;
+          // console.log({
+          //   title: item.title,
+          //   cleaned,
+          //   normalizedTitle,
+          //   titleMatch: cleaned === normalizedTitle,
+          //   seasonNumber,
+          //   wantedSeason,
+          //   seasonMatch: seasonNumber === wantedSeason,
+          // });
 
-          return Number(m[1]) === wantedSeason;
+          if (cleaned !== normalizedTitle) return false;
+
+          return seasonNumber === wantedSeason;
         });
+
   if (!match) {
-    throw new Error("No matching search result");
+    return {
+      links: [],
+      subtitles: [],
+    };
   }
-  // console.log("MATCH:", match);
-  // console.log("MATCH:", match);
 
-  let url: string;
-
-  if (mediaType === "movie") {
-    url = `${ONETOUCH_API}/${match.id}/episode/1`;
-  } else {
-    url = `${ONETOUCH_API}/${match.id}/episode/${episode ?? 1}`;
-  }
-  // console.log("STREAM URL:", url);
+  const url =
+    mediaType === "movie"
+      ? `${ONETOUCH_API}/${match.id}/episode/1`
+      : `${ONETOUCH_API}/${match.id}/episode/${episode ?? 1}`;
 
   const encrypted = await fetchWithTimeout(
     url,
@@ -124,14 +139,13 @@ async function fetchOneTouchStreams(
   ).then((r) => r.json());
 
   if (dec.status !== 200 || !dec.result) {
-    throw new Error(`dec-onetouchtv failed: ${dec.error ?? "unknown"}`);
+    return {
+      links: [],
+      subtitles: [],
+    };
   }
 
   const result = dec.result;
-
-  // console.log("========== STREAM RESULT ==========");
-  // console.dir(result, { depth: null });
-  // console.log("==================================");
 
   const sources =
     result.sources ??
@@ -143,7 +157,7 @@ async function fetchOneTouchStreams(
   const links = sources
     .map((s: any) => ({
       type: url.toLowerCase().includes(".m3u8") ? "hls" : "mp4",
-      link: `${s.file ?? s.url ?? s.src}`,
+      link: s.file ?? s.url ?? s.src,
       resolution: parseInt(s.label ?? s.quality ?? "0") || 0,
     }))
     .filter((s: any) => s.link);
@@ -172,6 +186,23 @@ async function fetchOneTouchStreams(
 }
 
 export async function GET(req: NextRequest) {
+  const logRequest = (status: number, reason: string) => {
+    const tmdbId = req.nextUrl.searchParams.get(FIELD_MAP.id);
+    const mediaType = req.nextUrl.searchParams.get("b");
+    const season = req.nextUrl.searchParams.get(FIELD_MAP.season);
+    const episode = req.nextUrl.searchParams.get(FIELD_MAP.episode);
+    const extra = mediaType === "tv" ? `/${season}/${episode}` : "";
+
+    const ip =
+      req.headers.get("cf-connecting-ip") ||
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+
+    console.log(
+      `[SENTINEL] ${tmdbId}/${mediaType}${extra} | ${status} | ${reason} | IP: ${ip}`,
+    );
+  };
   try {
     const tmdbId = req.nextUrl.searchParams.get(FIELD_MAP.id);
     const mediaType = req.nextUrl.searchParams.get("b");
@@ -183,42 +214,89 @@ export async function GET(req: NextRequest) {
     const token = req.nextUrl.searchParams.get(FIELD_MAP.token)!;
     const f_token = req.nextUrl.searchParams.get(FIELD_MAP.fToken)!;
 
-    if (!tmdbId || !mediaType || !title || !year || !ts || !token)
+    if (!tmdbId || !mediaType || !title || !year || !ts || !token) {
+      logRequest(404, "missing params");
       return NextResponse.json(
         { success: false, error: "need token" },
         { status: 404 },
       );
+    }
 
-    if (Date.now() - ts > 8000)
+    if (Date.now() - ts > 8000) {
+      logRequest(403, "token expired");
       return NextResponse.json(
         { success: false, error: "Invalid token" },
         { status: 403 },
       );
+    }
 
-    if (!validateBackendToken(tmdbId, f_token, ts, token))
+    if (!validateBackendToken(tmdbId, f_token, ts, token)) {
+      logRequest(403, "invalid token");
       return NextResponse.json(
         { success: false, error: "Invalid token" },
         { status: 403 },
       );
+    }
 
-    const { links, subtitles } = await fetchOneTouchStreams(
-      tmdbId,
-      mediaType,
-      season,
-      episode,
-      title,
-    );
+    let links: any[];
+    let subtitles: any[];
 
-    if (!links.length)
+    const { data: cached } = await supabase
+      .from("onetouch_cache")
+      .select("links, subtitles")
+      .eq("tmdb_id", tmdbId)
+      .eq("media_type", mediaType)
+      .eq("season", season ?? "")
+      .eq("episode", episode ?? "")
+      .gt("expires_at", new Date().toISOString())
+      .maybeSingle();
+
+    if (cached) {
+      links = cached.links ?? [];
+      subtitles = cached.subtitles ?? [];
+    } else {
+      const result = await fetchOneTouchStreams(
+        mediaType,
+        season,
+        episode,
+        title,
+        year,
+      );
+
+      links = result.links;
+      subtitles = result.subtitles;
+
+      if (links.length > 0) {
+        await supabase.from("onetouch_cache").upsert(
+          {
+            tmdb_id: tmdbId,
+            media_type: mediaType,
+            season: season ?? "",
+            episode: episode ?? "",
+            links,
+            subtitles,
+            refreshed_at: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 1000 * 60 * 60 * 3).toISOString(),
+          },
+          {
+            onConflict: "tmdb_id,media_type,season,episode",
+          },
+        );
+      }
+    }
+    if (!links.length) {
+      logRequest(404, "no streams found");
       return NextResponse.json(
         { success: false, error: "No streams found" },
         { status: 404 },
       );
-
+    }
+    logRequest(200, "OK!!!!!");
     return NextResponse.json({
       success: true,
       links,
       subtitles,
+      meow: !!cached,
     });
   } catch (err: any) {
     console.error("API Error:", err);

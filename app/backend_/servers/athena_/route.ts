@@ -284,6 +284,24 @@ async function fetchSrc(
 }
 
 export async function GET(req: NextRequest) {
+  const logRequest = (status: number, reason: string) => {
+    const tmdbId = req.nextUrl.searchParams.get(FIELD_MAP.id);
+    const mediaType = req.nextUrl.searchParams.get("b");
+    const season = req.nextUrl.searchParams.get(FIELD_MAP.season);
+    const episode = req.nextUrl.searchParams.get(FIELD_MAP.episode);
+    const extra = mediaType === "tv" ? `/${season}/${episode}` : "";
+
+    const ip =
+      req.headers.get("cf-connecting-ip") ||
+      req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+
+    console.log(
+      `[ATHENA] ${tmdbId}/${mediaType}${extra} | ${status} | ${reason} | IP: ${ip}`,
+    );
+  };
+
   try {
     const id = req.nextUrl.searchParams.get(FIELD_MAP.id);
     const media_type = req.nextUrl.searchParams.get("b");
@@ -296,6 +314,7 @@ export async function GET(req: NextRequest) {
     const f_token = req.nextUrl.searchParams.get(FIELD_MAP.fToken)!;
 
     if (!id || !media_type || !ts || !token) {
+      logRequest(404, "missing token");
       return NextResponse.json(
         { success: false, error: "need token" },
         { status: 404 },
@@ -303,6 +322,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (Date.now() - Number(ts) > 8000) {
+      logRequest(403, "expired token");
       return NextResponse.json(
         { success: false, error: "Invalid token" },
         { status: 403 },
@@ -310,13 +330,12 @@ export async function GET(req: NextRequest) {
     }
 
     if (!validateBackendToken(id, f_token, ts, token)) {
+      logRequest(403, "invalid token");
       return NextResponse.json(
         { success: false, error: "Invalid token" },
         { status: 403 },
       );
     }
-
-
 
     const seasonKey = season ?? "";
     const episodeKey = episode ?? "";
@@ -348,6 +367,7 @@ export async function GET(req: NextRequest) {
           srcPath = await fetchSrc(mxId, media_type, season, episode);
         }
       } catch {
+        logRequest(504, "fetch timeout");
         return NextResponse.json(
           { success: false, error: "Timed out" },
           { status: 504 },
@@ -355,6 +375,7 @@ export async function GET(req: NextRequest) {
       }
 
       if (!srcPath) {
+        logRequest(502, "source not found");
         return NextResponse.json(
           { success: false, error: "Source not found" },
           { status: 502 },
@@ -378,18 +399,19 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    console.log("srcPath", srcPath);
     const upstreamPath = new URL(`${SCREENIFY}${srcPath}`).pathname;
 
     const workerUrl = await resolveWorker(upstreamPath);
-
     if (!workerUrl) {
+      logRequest(502, "no proxy available");
       return NextResponse.json(
-        { success: false, error: "No available Daedalus worker" },
+        { success: false, error: "No available proxy" },
         { status: 502 },
       );
     }
     const signedUrl = await signWorkerUrl(workerUrl);
+
+    logRequest(200, "OK!!!!!");
     return NextResponse.json({
       success: true,
       links: [{ type: "hls", link: signedUrl }],

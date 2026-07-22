@@ -14,6 +14,12 @@ export const initialServers: ServerTypes[] = [
     desc: "4K Support ",
   },
   {
+    name: "Sentinel V",
+    server: "sentinel_",
+    status: "queue",
+    desc: "K-Dramas, C-Dramas & Asian movies",
+  },
+  {
     name: "Kokuu II",
     server: "orion_",
     status: "queue",
@@ -25,12 +31,6 @@ export const initialServers: ServerTypes[] = [
     server: "athena_",
     status: "queue",
     desc: "Main Server & Multi Audio Support",
-  },
-  {
-    name: "Sentinel V",
-    server: "sentinel_",
-    status: "queue",
-    desc: "K-Dramas, C-Dramas & Asian movies",
   },
 
   // {

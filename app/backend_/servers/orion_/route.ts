@@ -276,7 +276,7 @@ export async function GET(req: NextRequest) {
             link: `${worker}proxy?data=${encodeURIComponent(await encryptUrl(source.file))}&h=${encodeURIComponent(encryptedH)}`,
           })),
       );
-      logRequest(200, "cache hit");
+      logRequest(200, "OK!!!!!");
       return NextResponse.json({
         success: true,
         links,
