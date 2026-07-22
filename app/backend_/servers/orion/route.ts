@@ -1,7 +1,7 @@
 import { fetchWithTimeout } from "@/lib/fetch-timeout";
 import { NextRequest, NextResponse } from "next/server";
 import { validateBackendToken } from "@/lib/validate-token";
-import { isValidReferer } from "@/lib/allowed-referers";
+
 import { FIELD_MAP } from "@/lib/token";
 import { encryptUrl } from "@/lib/encryptor";
 import { createClient } from "@supabase/supabase-js";
@@ -234,14 +234,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const referer = req.headers.get("referer") || "";
-    if (!isValidReferer(referer)) {
-      logRequest(403, "invalid referrer");
-      return NextResponse.json(
-        { success: false, error: "Forbidden" },
-        { status: 403 },
-      );
-    }
+
 
     const worker = await getWorkingProxy(HOLLY_WORKERS);
 

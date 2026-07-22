@@ -201,12 +201,6 @@ export async function GET(req: NextRequest) {
         { status: 403 },
       );
 
-    if (!isValidReferer(req.headers.get("referer") || ""))
-      return NextResponse.json(
-        { success: false, error: "Forbidden" },
-        { status: 403 },
-      );
-
     const { links, subtitles } = await fetchOneTouchStreams(
       tmdbId,
       mediaType,
