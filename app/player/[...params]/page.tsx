@@ -73,7 +73,7 @@ export default function Player() {
 
   const restrictionActive = phHour >= 17 || phHour < 5;
 
-  const whitelistSites = ["zxcstream"];
+  const whitelistSites = ["example"];
 
   const isWhitelisted =
     window.self === window.top ||
