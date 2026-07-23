@@ -198,6 +198,22 @@ const HOLLY_WORKERS = [
   "https://little-bird-702a.carrot2.workers.dev/",
   "https://round-wave-420a.carrot4.workers.dev/",
   "https://soft-tree-cf19.carrot3.workers.dev/",
+  "https://restless-night-5882.carrot5.workers.dev/",
+  "https://sweet-breeze-2630.carrot6.workers.dev/",
+  "https://purple-cake-7e15.carrot7.workers.dev/",
+  "https://jolly-butterfly-081a.carrot8.workers.dev/",
+  "https://curly-surf-ddc0.carrot9.workers.dev/",
+  "https://steep-meadow-bbeb.carrot10.workers.dev/",
+  "https://wild-math-4113.carrot12.workers.dev/",
+  "https://young-cherry-ce34.carrot11.workers.dev/",
+  "https://restless-frost-4949.carrot13.workers.dev/",
+  "https://raspy-firefly-a523.carrot14.workers.dev/",
+  "https://red-dawn-bf1d.carrot16.workers.dev/",
+  "https://square-paper-11d3.carrot15.workers.dev/",
+  "https://lively-rain-6889.carrot17.workers.dev/",
+  "https://summer-salad-552a.carrot18.workers.dev/",
+  "https://purple-sea-e132.carrot20.workers.dev/",
+  "https://quiet-paper-8f9c.carrot19.workers.dev/",
 ];
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
