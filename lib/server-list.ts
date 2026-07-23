@@ -3,7 +3,7 @@ import { ServerTypes } from "@/types/player-types";
 export const initialServers: ServerTypes[] = [
   {
     name: "Orion I",
-    server: "icarus_",
+    server: "orion_",
     status: "queue",
     desc: "Built-In Subtitle",
   },
@@ -17,7 +17,7 @@ export const initialServers: ServerTypes[] = [
     name: "Berkas III",
     server: "berkas_",
     status: "queue",
-    desc: "4K Support ",
+    desc: "4K Support",
   },
   {
     name: "Sentinel V",
