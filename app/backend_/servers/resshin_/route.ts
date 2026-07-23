@@ -468,7 +468,7 @@ export async function GET(req: NextRequest) {
         format: q.format,
         size: q.size,
         type: q.url.includes(".m3u8") ? "hls" : "mp4",
-        link: q.url, // DIRECT LINK
+        link: `/backend_/servers/resshin_/proxy?url=${encodeURIComponent(q.url)}`,
       })),
       subtitles: [],
       dubs: dubs.map((d: any) => ({
